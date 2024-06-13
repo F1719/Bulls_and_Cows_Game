@@ -7,52 +7,69 @@ discord: Filip filip936
 import random
 import time
 
-print("Hi there!")
-print("-" * 70)
-#number_r = str(random.randint(1000,9999))  
-number_r = "2016"
-print("I've generated a random 4 digit number for you.", "Let's play a bulls and cows game.") 
-print("-" * 70)
-guess_number = 0
-round_count = 0
-time_start = time.time()
+def generate_number():
+    return str(random.randint(1000, 9999))
 
-# smyčka pro hádání
-while guess_number != number_r:
-    guess_number = (input("Enter a number:"))
-    round_count = round_count + 1
-    if not guess_number.isnumeric():
+def get_guess():
+    return input("Enter a number: ")
+
+def validate_guess(guess):
+    if not guess.isnumeric():
         print("You have not entered a number!")
-        continue
-    elif len(guess_number) != 4:
+        return False
+    if len(guess) != 4:
         print("You have not entered a 4 digit number!")
-        continue
-    elif guess_number == number_r:
-        time_end = time.time()
-        total_time = time_end - time_start
-        print("Congratulations, you won in ", round_count, "rounds.")
-        print("It took you", round(total_time, 2), "seconds to guess the number.")
-        print("-" * 70)
-        break
-    else: 
-        bulls = 0
-        if bulls == 1:
-            text_b = "Bull"
-        else:
-            text_b = "Bulls"
-        cows = 0
-        if cows == 1:
-            text_c = "Cow"
-        else:
-            text_c = "Cows"
+        return False
+    if guess[0] == '0':
+        print("The number cannot start with 0!")
+        return False
+    if len(set(guess)) != 4:
+        print("The number cannot contain duplicate digits!")
+        return False
+    return True
 
-        for i, digit in enumerate(guess_number):
-            if digit == number_r[i]:
-                bulls += 1
-            elif digit in number_r:
-                cows += 1
-        print("-" * 70)
-        print(guess_number)
-        print(text_b, bulls, text_c, cows)
-        print("-" * 70)
+def calculate_bulls_and_cows(guess, secret_number):
+    bulls = sum(1 for i in range(len(guess)) if guess[i] == secret_number[i])
+    cows = sum(1 for i in range(len(guess)) if guess[i] in secret_number and guess[i] != secret_number[i])
+    return bulls, cows
 
+def print_result(guess, bulls, cows):
+    text_bulls = "Bull" if bulls == 1 else "Bulls"
+    text_cows = "Cow" if cows == 1 else "Cows"
+    print("-" * 70)
+    print(f"{guess} -> {bulls} {text_bulls}, {cows} {text_cows}")
+    print("-" * 70)
+
+def play_game(secret_number):
+    round_count = 0
+    start_time = time.time()
+    
+    while True:
+        guess = get_guess()
+        round_count += 1
+        
+        if not validate_guess(guess):
+            continue
+        
+        if guess == secret_number:
+            end_time = time.time()
+            total_time = end_time - start_time
+            print(f"Congratulations, you won in {round_count} rounds.")
+            print(f"It took you {round(total_time, 2)} seconds to guess the number.")
+            print("-" * 70)
+            break
+        
+        bulls, cows = calculate_bulls_and_cows(guess, secret_number)
+        print_result(guess, bulls, cows)
+
+def main_fce():
+    print("Hi there!")
+    print("-" * 70)
+    secret_number = generate_number()
+    print("I've generated a random 4 digit number for you. Let's play a bulls and cows game.") 
+    print("-" * 70)
+    
+    play_game(secret_number)
+
+if __name__ == "__main__":
+    main_fce()
