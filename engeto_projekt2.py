@@ -8,12 +8,33 @@ import random
 import time
 
 def generate_number():
+    '''
+    Generates a random 4-digit number with unique digits.
+    
+    Returns:
+        str: A string representing a 4-digit number.
+    '''
     return str(random.randint(1000, 9999))
 
 def get_guess():
+    '''
+    Promts the user to enter a guess number.
+    
+    Returns:
+        str: The user's guess number.
+    '''
     return input("Enter a number: ")
 
 def validate_guess(guess):
+    """
+    Validates the user's guess.
+    
+    Args:
+        guess (str): The user's guess.
+        
+    Returns:
+        bool: True if the guess is valid, False if not.
+    """
     if not guess.isnumeric():
         print("You have not entered a number!")
         return False
@@ -29,11 +50,29 @@ def validate_guess(guess):
     return True
 
 def calculate_bulls_and_cows(guess, secret_number):
+    """
+    Calculates the number of bulls and cows for a given guess.
+    
+    Args:
+        guess (str): The user's guess.
+        secret_number (str): The secret number to be guessed.
+        
+    Returns:
+        tuple: A tuple containing the number of bulls and cows.
+    """
     bulls = sum(1 for i in range(len(guess)) if guess[i] == secret_number[i])
     cows = sum(1 for i in range(len(guess)) if guess[i] in secret_number and guess[i] != secret_number[i])
     return bulls, cows
 
 def print_result(guess, bulls, cows):
+    """
+    Prints the result of the guess.
+    
+    Args:
+        guess (str): The user's guess.
+        bulls (int): The number of bulls.
+        cows (int): The number of cows.
+    """
     text_bulls = "Bull" if bulls == 1 else "Bulls"
     text_cows = "Cow" if cows == 1 else "Cows"
     print("-" * 70)
@@ -41,6 +80,12 @@ def print_result(guess, bulls, cows):
     print("-" * 70)
 
 def play_game(secret_number):
+    """
+    Plays the bulls and cows game.
+    
+    Args:
+        secret_number (str): The secret number to be guessed.
+    """
     round_count = 0
     start_time = time.time()
     
@@ -62,10 +107,31 @@ def play_game(secret_number):
         bulls, cows = calculate_bulls_and_cows(guess, secret_number)
         print_result(guess, bulls, cows)
 
+def validate_secret_number(secret_number): 
+    """
+    Validates the secret number to ensure it has unique digits.
+    
+    Args:
+        secret_number (str): The secret number.
+        
+    Returns:
+        bool: True if the secret number is valid, False if not.
+    """
+    if len(set(secret_number)) != 4:
+        return False
+    return True 
+
 def main_fce():
+    """
+    The main function that initializes the game.
+    """
     print("Hi there!")
     print("-" * 70)
-    secret_number = generate_number()
+    while True:
+        secret_number = generate_number()
+        if validate_secret_number(secret_number): 
+            break
+    
     print("I've generated a random 4 digit number for you. Let's play a bulls and cows game.") 
     print("-" * 70)
     
